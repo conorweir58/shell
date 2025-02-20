@@ -23,5 +23,3 @@ void execute_ls();
 void execute_environ();
 void command_not_found(char *args);
 
-// DONE IN STAGE 2
-// void execute_command(char **args);
