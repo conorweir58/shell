@@ -4,7 +4,7 @@
 // Function to get the shell prompt based on the current working directory	
 char *get_prompt()
 {
-    char cwd[MAX_PATH];    // Current working directory
+    static char cwd[MAX_PATH];    // Current working directory -> static so it doesn't get destroyed after the function ends
     getcwd(cwd, sizeof(cwd)); // Get current working directory
     char *prompt = cwd;  // Shell prompt
     return prompt;
