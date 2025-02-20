@@ -21,5 +21,6 @@ void execute_clear();
 void execute_quit();
 void execute_ls();
 void execute_environ();
+void execute_cd(char *path);
 void command_not_found(char *args);
 

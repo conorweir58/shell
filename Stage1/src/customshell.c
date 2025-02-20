@@ -42,6 +42,17 @@ int main() {
                 {
                     execute_environ();
                 }
+                else if (!strcmp(args[0], "cd")) 
+                {
+                    // set path to the first argument after cd, if there is none, the path becomes NULL
+                    char *path = args[1];
+
+                    // execute the cd command with the path
+                    execute_cd(path);
+
+                    // Update the prompt to the new cwd
+                    prompt = get_prompt();
+                }
                 else 
                 {
                     command_not_found(args[0]);
