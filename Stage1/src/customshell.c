@@ -36,7 +36,9 @@ int main() {
                 }
                 else if (!strcmp(args[0], "ls")) 
                 {
-                    execute_ls();
+                    char *path = args[1];
+
+                    execute_ls(path);
                 }
                 else if (!strcmp(args[0], "environ")) 
                 {

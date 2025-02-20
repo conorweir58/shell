@@ -20,9 +20,23 @@ void execute_quit() {
     exit(0); // Exits the shell
 }
 
-void execute_ls()
+void execute_ls(char *path)
 {
-    system("ls -al"); // Lists all files and directories in the current directory
+    if (path != NULL)
+    {
+        // char *ls_command = "ls -al "; // Create the ls -al command
+        char *command = malloc(strlen("ls -al ") + strlen(path) + 1); // Allocate memory for the command (enough for the command and the path)
+
+        strcpy(command, "ls -al "); // Copy the ls -al command to the command
+        strcat(command, path); // Append the path to the command
+        system(command); // Execute the command
+        free(command); // Free the malloc'd memory
+        return;
+    }
+    else
+    {
+        system("ls -al"); // Lists all files and directories in the current directory
+    }
 }
 
 void execute_cd(char *path)
