@@ -1,0 +1,42 @@
+#########################################
+#####                               #####
+#####    CUSTOMSHELL USER MANUAL    #####
+#####                               #####
+#########################################
+
+##            ##
+## DESCRIPTON ##
+##            ##
+
+"Customshell" is a shell built in C with:
+- Built in Command Execution
+
+##                         ##
+## BUILT-IN SHELL COMMANDS ##
+##                         ##
+
+# COMMAND: cd [directory path]
+Change the current default directory.
+If no directory path given, reports the current working directory.
+
+# COMMAND: clr
+Clears the screen of the terminal.
+
+# COMMAND: dir [directory path]
+Lists the contents of directory at given directory path.
+If no directory path given, lists the contents of the current working directory.
+
+# COMMAND: environ
+Lists all the environment strings.
+
+# COMMAND: echo [string]
+Output a string to the terminal.
+
+# COMMAND: help
+Display shell user manual.
+
+# COMMAND: pause
+Pause operation of the shell until 'Enter' key is pressed.
+
+# COMMAND: quit
+Exit the shell.
