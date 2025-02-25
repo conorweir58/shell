@@ -26,7 +26,7 @@ int main() {
             if (args[0]) 
             {
                 // List of commands
-                if (!strcmp(args[0], "clear")) 
+                if (!strcmp(args[0], "clr")) 
                 {
                     execute_clear();
                 }
@@ -34,7 +34,7 @@ int main() {
                 {
                     execute_quit();
                 }
-                else if (!strcmp(args[0], "ls")) 
+                else if (!strcmp(args[0], "dir")) 
                 {
                     char *path = args[1];
 

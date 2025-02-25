@@ -98,7 +98,24 @@ void execute_pause()
 
 void execute_help()
 {
-    return;
+    FILE *pfile = NULL;
+    pfile = fopen("../manual/readme", "r");
+
+    if (pfile)
+    {
+        char c;
+        while ((c = getc(pfile)) != EOF)
+        {
+            putchar(c);
+        }
+        fclose(pfile);
+        putchar('\n');
+    }
+    else
+    {
+        printf("Error: Could not find help manual!\n");
+    }
+
 }
 
 void command_not_found(char *arg)
@@ -111,13 +128,15 @@ void command_not_found(char *arg)
 
 // LEFT TO ADD:
 // UPDATE LS COMMAND TO HAVE A PATH ARGUMENT -> DONE
-// ECHO COMMAND
-// PAUSE COMMAND
-// HELP COMMAND
+// ECHO COMMAND -> DONE
+// PAUSE COMMAND -> DONE
+// HELP COMMAND 
 // UPDATE THE SHELL=/CUSTOMSHELL
 // BATCH FILE SUPPORT
 // CHECK TO SEE IF FORK AND EXEC CAN BE USED -> might not be till stage 2 for external commands -> ask graham
 // check is better to just use system() for the commands for clear etc or to use fork and exec
+// create the readme
+// create the makefile
 
 // ADDITIONAL NOTES:
 // possibly change the execute_cd and execute_ls functions to take in a char **args variable
