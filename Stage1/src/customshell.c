@@ -55,6 +55,18 @@ int main() {
                     // Update the prompt to the new cwd
                     prompt = get_prompt();
                 }
+                else if (!strcmp(args[0], "echo")) 
+                {
+                    execute_echo(args);
+                }
+                else if (!strcmp(args[0], "pause")) 
+                {
+                    execute_pause();
+                }
+                else if (!strcmp(args[0], "help")) 
+                {
+                    execute_help();
+                }
                 else 
                 {
                     command_not_found(args[0]);

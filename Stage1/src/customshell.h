@@ -22,5 +22,8 @@ void execute_quit();
 void execute_ls(char *path);
 void execute_environ();
 void execute_cd(char *path);
+void execute_echo(char **args);
+void execute_pause();
+void execute_help();
 void command_not_found(char *args);
 

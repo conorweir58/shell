@@ -78,7 +78,48 @@ void execute_environ()
     }
 }
 
+void execute_echo(char **args)
+{
+    for (int i = 1; args[i] != NULL; i++)
+    {
+        printf("%s ", args[i]);
+    }
+    printf("\n");
+}
+
+void execute_pause()
+{
+    // prompts the user to press enter to continue
+    printf("Press Enter to continue...\n");
+
+    // waits for the user to press enter -> getchar() reads the next character from the standard input so user will need to hit enter to proceed no matter what
+    getchar();
+}
+
+void execute_help()
+{
+    return;
+}
+
 void command_not_found(char *arg)
 {
     printf("%s: Command not found\n", arg);
 }
+
+// CURRENT ERROR:
+
+
+// LEFT TO ADD:
+// UPDATE LS COMMAND TO HAVE A PATH ARGUMENT -> DONE
+// ECHO COMMAND
+// PAUSE COMMAND
+// HELP COMMAND
+// UPDATE THE SHELL=/CUSTOMSHELL
+// BATCH FILE SUPPORT
+// CHECK TO SEE IF FORK AND EXEC CAN BE USED -> might not be till stage 2 for external commands -> ask graham
+// check is better to just use system() for the commands for clear etc or to use fork and exec
+
+// ADDITIONAL NOTES:
+// possibly change the execute_cd and execute_ls functions to take in a char **args variable
+// check error handling for all functions -> using fopen, freopen, etc you should check the return status and indicate if an error has occurred, and take appropriate action.
+// check if possible to make sure pause doesn't try to run a command 
