@@ -9,7 +9,7 @@
 #define MAX_BUFFER 1024    // Max line buffer size
 #define MAX_ARGS 64        // Max number of arguments
 #define MAX_PATH 1024      // Max file path size
-#define SEPARATORS " \t\n" // Token separators
+#define SEPARATORS " \t\n\r" // Token separators -> space, tab, newline, return
 
 extern char **environ;  // NULL terminated array of char *
 
@@ -17,6 +17,7 @@ extern char **environ;  // NULL terminated array of char *
 
 // Function prototypes
 char *get_prompt();
+void execute_batch_file(char *file);
 void execute_clear();
 void execute_quit();
 void execute_ls(char *path);

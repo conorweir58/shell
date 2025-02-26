@@ -1,6 +1,5 @@
 #include "customshell.h"
 
-
 // Function to get the shell prompt based on the current working directory	
 char *get_prompt()
 {
@@ -8,6 +7,90 @@ char *get_prompt()
     getcwd(cwd, sizeof(cwd)); // Get current working directory
     char *prompt = cwd;  // Shell prompt
     return prompt;
+}
+
+void execute_batch_file(char *file)
+{
+    FILE *pfile = NULL;
+    pfile = fopen(file, "r");
+
+    if (pfile)
+    {
+        char buf[MAX_BUFFER];  // Input buffer
+        char *args[MAX_ARGS];  // Array of argument strings
+        char **arg;            // Pointer for iterating through args
+
+        // Loop through a line of input
+        while (fgets(buf, MAX_BUFFER, pfile))
+        {
+            // buf[strcspn(buf, "\n")] = '\0'; // Remove newline character from input
+            
+            // Tokenize input into args array
+            arg = args;
+            *arg++ = strtok(buf, SEPARATORS);
+            while ((*arg++ = strtok(NULL, SEPARATORS)));
+            
+            // If input is not empty, process command
+            if (args[0])
+            {
+                // List of commands
+                if (!strcmp(args[0], "clr"))
+                {
+                    execute_clear();
+                }
+                else if (!strcmp(args[0], "quit"))
+                {
+                    execute_quit();
+                }
+                else if (!strcmp(args[0], "dir"))
+                {
+                    char *path = args[1];
+
+                    execute_ls(path);
+                }
+                else if (!strcmp(args[0], "environ"))
+                {
+                    execute_environ();
+                }
+                else if (!strcmp(args[0], "cd"))
+                {
+                    // if there is more than one path after cd, print an error message -> checking for both args[1] and args[2] makes sure cd on its own still works
+                    if(args[1] && args[2])
+                    {
+                        printf("Error: Too many arguments for command \"cd\"!\n");
+                        continue;
+                    }
+
+                    // set path to the first argument after cd, if there is none, the path becomes NULL
+                    char *path = args[1];
+                    execute_cd(path);
+                }
+                else if (!strcmp(args[0], "echo"))
+                {
+                    execute_echo(args);
+                }
+                else if (!strcmp(args[0], "pause"))
+                {
+                    execute_pause();
+                }
+                else if (!strcmp(args[0], "help"))
+                {
+                    execute_help();
+                }
+                else
+                {
+                    command_not_found(args[0]);
+                }
+            }
+        }
+        fclose(pfile);
+        execute_quit();
+    }
+    else
+    {
+        printf("Error: Could not open batch file!\n");
+        exit(1); // Exit the shell -> possibly change to return an error code
+    }
 }
 
 // Function to execute the "clear" command
@@ -141,4 +224,6 @@ void command_not_found(char *arg)
 // ADDITIONAL NOTES:
 // possibly change the execute_cd and execute_ls functions to take in a char **args variable
 // check error handling for all functions -> using fopen, freopen, etc you should check the return status and indicate if an error has occurred, and take appropriate action.
-// check if possible to make sure pause doesn't try to run a command 
+// check if possible to make sure pause doesn't try to run a command
+// check if get_prompt should use a static variable and if so should i not init it every time its called
+// add an error message function that takes in an integer based on the error and prints the appropriate error message
