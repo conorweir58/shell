@@ -1,10 +1,36 @@
 #include "customshell.h"
 
+//
+//  Helper functions
+// 
+
+void start_up_shell()
+{
+    printf("###############################################################################################\n");
+    printf("##                                                                                           ##\n");
+    printf("##                                  Welcome to CustomShell!                                  ##\n");
+    printf("##                                Author: Conor Weir (23418374)                              ##\n");
+    printf("##                                                                                           ##\n");
+    printf("##                            Type \"help\" for a list of commands.                            ##\n");
+    printf("##                                                                                           ##\n");
+    printf("##                            Type \"quit\" to exit the shell.                                 ##\n");
+    printf("##                                                                                           ##\n");
+    printf("###############################################################################################\n");
+}
+
 // Function to get the shell prompt based on the current working directory	
 char *get_prompt()
 {
     static char cwd[MAX_PATH];    // Current working directory -> static so it doesn't get destroyed after the function ends
     getcwd(cwd, sizeof(cwd)); // Get current working directory
+
+    // Error handling for getcwd
+    if(cwd == NULL)
+    {
+        printf("Error: Could not get the Current Working Directory\n");
+        exit(1);
+    }
+    
     char *prompt = cwd;  // Shell prompt
     return prompt;
 }
@@ -22,9 +48,7 @@ void execute_batch_file(char *file)
 
         // Loop through a line of input
         while (fgets(buf, MAX_BUFFER, pfile))
-        {
-            // buf[strcspn(buf, "\n")] = '\0'; // Remove newline character from input
-            
+        {            
             // Tokenize input into args array
             arg = args;
             *arg++ = strtok(buf, SEPARATORS);
@@ -33,54 +57,8 @@ void execute_batch_file(char *file)
             // If input is not empty, process command
             if (args[0])
             {
-                // List of commands
-                if (!strcmp(args[0], "clr"))
-                {
-                    execute_clear();
-                }
-                else if (!strcmp(args[0], "quit"))
-                {
-                    execute_quit();
-                }
-                else if (!strcmp(args[0], "dir"))
-                {
-                    char *path = args[1];
-
-                    execute_ls(path);
-                }
-                else if (!strcmp(args[0], "environ"))
-                {
-                    execute_environ();
-                }
-                else if (!strcmp(args[0], "cd"))
-                {
-                    // if there is more than one path after cd, print an error message -> checking for both args[1] and args[2] makes sure cd on its own still works
-                    if(args[1] && args[2])
-                    {
-                        printf("Error: Too many arguments for command \"cd\"!\n");
-                        continue;
-                    }
-
-                    // set path to the first argument after cd, if there is none, the path becomes NULL
-                    char *path = args[1];
-                    execute_cd(path);
-                }
-                else if (!strcmp(args[0], "echo"))
-                {
-                    execute_echo(args);
-                }
-                else if (!strcmp(args[0], "pause"))
-                {
-                    execute_pause();
-                }
-                else if (!strcmp(args[0], "help"))
-                {
-                    execute_help();
-                }
-                else
-                {
-                    command_not_found(args[0]);
-                }
+                // call execute command function which will process the command
+                execute_command(args);
             }
         }
         fclose(pfile);
@@ -92,6 +70,62 @@ void execute_batch_file(char *file)
         exit(1); // Exit the shell -> possibly change to return an error code
     }
 }
+
+void execute_command(char **args)
+{
+    // List of commands
+    if (!strcmp(args[0], "clr"))
+    {
+        execute_clear();
+    }
+    else if (!strcmp(args[0], "quit"))
+    {
+        execute_quit();
+    }
+    else if (!strcmp(args[0], "dir"))
+    {
+        char *path = args[1];
+
+        execute_ls(path);
+    }
+    else if (!strcmp(args[0], "environ"))
+    {
+        execute_environ();
+    }
+    else if (!strcmp(args[0], "cd"))
+    {
+        // if there is more than one path after cd, print an error message -> checking for both args[1] and args[2] makes sure cd on its own still works
+        if(args[1] && args[2])
+        {
+            printf("Error: Too many arguments for command \"cd\"!\n");
+            return;
+        }
+
+        // set path to the first argument after cd, if there is none, the path becomes NULL
+        char *path = args[1];
+        execute_cd(path);
+    }
+    else if (!strcmp(args[0], "echo"))
+    {
+        execute_echo(args);
+    }
+    else if (!strcmp(args[0], "pause"))
+    {
+        execute_pause();
+    }
+    else if (!strcmp(args[0], "help"))
+    {
+        execute_help();
+    }
+    else
+    {
+        command_not_found(args[0]);
+    }
+}
+
+//
+//  Command functions
+//
 
 // Function to execute the "clear" command
 void execute_clear() {
@@ -126,6 +160,12 @@ void execute_cd(char *path)
 {
     char cwd[MAX_PATH];    // Current working directory
     getcwd(cwd, sizeof(cwd)); // Get current working directory
+    // Error handling for getcwd
+    if(cwd == NULL)
+    {
+        printf("Error: Could not get the Current Working Directory\n");
+        exit(1);
+    }
 
     // if there is no path, print current working directory
     if (path == NULL)
@@ -145,7 +185,13 @@ void execute_cd(char *path)
     setenv("OLDPWD", cwd, 1);
 
     // update cwd to the new Current Working Directory after chdir(path)
-    getcwd(cwd, sizeof(cwd));
+    getcwd(cwd, sizeof(cwd)); // Get current working directory
+    // Error handling for getcwd
+    if(cwd == NULL)
+    {
+        printf("Error: Could not get the Current Working Directory\n");
+        exit(1);
+    }
 
     // set the environment variable PWD to the new path of the CWD
     setenv("PWD", cwd, 1);
@@ -213,9 +259,10 @@ void command_not_found(char *arg)
 // UPDATE LS COMMAND TO HAVE A PATH ARGUMENT -> DONE
 // ECHO COMMAND -> DONE
 // PAUSE COMMAND -> DONE
-// HELP COMMAND 
+// HELP COMMAND -> DONE
 // UPDATE THE SHELL=/CUSTOMSHELL
-// BATCH FILE SUPPORT
+// BATCH FILE SUPPORT -> DONE
+// ADD ERROR HANDLING FOR BATCH FILE
 // CHECK TO SEE IF FORK AND EXEC CAN BE USED -> might not be till stage 2 for external commands -> ask graham
 // check is better to just use system() for the commands for clear etc or to use fork and exec
 // create the readme

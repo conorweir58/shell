@@ -15,9 +15,18 @@ extern char **environ;  // NULL terminated array of char *
 
 #endif
 
+//
 // Function prototypes
+//
+
+// Helper functions
+void start_up_shell();
 char *get_prompt();
 void execute_batch_file(char *file);
+void execute_command(char **args);
+// void tokenize(char *input, char **args);
+
+// Command functions
 void execute_clear();
 void execute_quit();
 void execute_ls(char *path);
