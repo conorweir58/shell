@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // COULD THIS BE A FUNCTION??
     char shell_path[MAX_PATH]; // Create variable to store the path of the shell
     strcpy(shell_path, cwd); // Copy the current working directory to the shell path
     strcat(shell_path, "/customshell"); // Append the name of the shell to the shell path to get the full SHELL enviorment variable path
@@ -28,6 +29,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // COULD THIS IF STATEMENT BE A FUNCTION??
     // Check if a batch file was passed as an argument
     if(!argv[1])
     {
@@ -46,8 +48,6 @@ int main(int argc, char *argv[]) {
 
     // Main input loop
     while (!feof(stdin)) { 
-
-
 
         // Display prompt
         printf("<%s>$ ", prompt);

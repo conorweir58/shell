@@ -30,7 +30,7 @@ char *get_prompt()
         printf("Error: Could not get the Current Working Directory\n");
         exit(1);
     }
-    
+
     char *prompt = cwd;  // Shell prompt
     return prompt;
 }
@@ -104,6 +104,8 @@ void execute_command(char **args)
         // set path to the first argument after cd, if there is none, the path becomes NULL
         char *path = args[1];
         execute_cd(path);
+
+        get_prompt();
     }
     else if (!strcmp(args[0], "echo"))
     {
@@ -141,7 +143,6 @@ void execute_ls(char *path)
 {
     if (path != NULL)
     {
-        // char *ls_command = "ls -al "; // Create the ls -al command
         char *command = malloc(strlen("ls -al ") + strlen(path) + 1); // Allocate memory for the command (enough for the command and the path)
 
         strcpy(command, "ls -al "); // Copy the ls -al command to the command
@@ -253,7 +254,7 @@ void command_not_found(char *arg)
 }
 
 // CURRENT ERROR:
-
+// NONE
 
 // LEFT TO ADD:
 // UPDATE LS COMMAND TO HAVE A PATH ARGUMENT -> DONE
@@ -262,10 +263,12 @@ void command_not_found(char *arg)
 // HELP COMMAND -> DONE
 // UPDATE THE SHELL=/CUSTOMSHELL
 // BATCH FILE SUPPORT -> DONE
+// CREATE A COMMANDS.C FILE CONTAINING ALL COMMAND FUNCTIONS
+// PUT THE SETENV SHELL INTO A FUNCTION
 // ADD ERROR HANDLING FOR BATCH FILE
 // CHECK TO SEE IF FORK AND EXEC CAN BE USED -> might not be till stage 2 for external commands -> ask graham
 // check is better to just use system() for the commands for clear etc or to use fork and exec
-// create the readme
+// create the readme !!!
 // create the makefile
 
 // ADDITIONAL NOTES:
