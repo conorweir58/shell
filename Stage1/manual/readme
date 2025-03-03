@@ -53,6 +53,7 @@ The shell will then execute the commands in the batch file in order, from the be
 
 # THE BATCH FILE
 The batch file must contain a list of commands, each on a new line.
+The shell will execute each command in the order they appear in the file.
 
 # EXITING THE SHELL FROM A BATCH FILE
 The shell will automatically exit once the End of File (EOF) is reached in the batch file.
