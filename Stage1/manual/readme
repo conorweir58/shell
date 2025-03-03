@@ -10,6 +10,7 @@
 
 "Customshell" is a shell built in C with:
 - Built in Command Execution
+- Batch file Execution Compatability
 
 ##                         ##
 ## BUILT-IN SHELL COMMANDS ##
@@ -40,3 +41,18 @@ Pause operation of the shell until 'Enter' key is pressed.
 
 # COMMAND: quit
 Exit the shell.
+
+##                                    ##
+## BATCH FILE EXECUTION COMPATABILITY ##
+##                                    ##
+
+# PASSING A BATCH FILE
+In order to pass a Batch File to the shell, the user must pass the file path as an argument when running the shell.
+The path to the shell executable must be argument 1 (argv[0]) and the path to the batch file must be argument 2 (argv[1]). E.g. "./customshell batch_file"
+The shell will then execute the commands in the batch file in order, from the beginning to the end of the file.
+
+# THE BATCH FILE
+The batch file must contain a list of commands, each on a new line.
+
+# EXITING THE SHELL FROM A BATCH FILE
+The shell will automatically exit once the End of File (EOF) is reached in the batch file.
