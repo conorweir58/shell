@@ -104,7 +104,7 @@ void execute_pause()
 void execute_help()
 {
     FILE *pfile = NULL;
-    pfile = fopen("../manual/readme", "r");
+    pfile = fopen("./manual/readme", "r");
 
     if (pfile)
     {
