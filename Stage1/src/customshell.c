@@ -51,7 +51,9 @@ int main(int argc, char *argv[]) {
     while (!feof(stdin)) { 
 
         // Display prompt
-        printf("<%s>$ ", prompt);
+        printf("\033[0;33m"); // Set text colour to yellow
+        printf("<%s>$ ", prompt); // Print prompt in yellow
+        printf("\033[0m"); // Reset text colour
         fflush(stdout); // Ensure output is printed immediately
 
         // Read a line of input
