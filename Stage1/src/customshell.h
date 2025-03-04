@@ -26,14 +26,3 @@ void execute_batch_file(char *file);
 void execute_command(char **args);
 // void tokenize(char *input, char **args);
 
-// Command functions
-void execute_clear();
-void execute_quit();
-void execute_ls(char *path);
-void execute_environ();
-void execute_cd(char *path);
-void execute_echo(char **args);
-void execute_pause();
-void execute_help();
-void command_not_found(char *args);
-

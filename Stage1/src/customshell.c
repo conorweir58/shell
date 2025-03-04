@@ -1,4 +1,5 @@
 #include "customshell.h"
+#include "shell_commands.h"
 
 int main(int argc, char *argv[]) {
     
