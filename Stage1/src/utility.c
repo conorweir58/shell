@@ -7,16 +7,37 @@
 
 void start_up_shell()
 {
+    // variables for storing the user name
+    char user[MAX_BUFFER];  // User name buffer
+    char* pTmp;
+
+    // Get the user name from the USER environment variable
+    if((pTmp = getenv("USER")))
+    {
+        // if it works -> copy the user name to the user variable
+        strcpy(user, pTmp);
+    }
+    else
+    {
+        // if it doesn't work -> print error message and set the user name to "User"
+        fprintf( stderr, "Could not retrieve USER variable.\n");
+        strcpy(user, "User");
+    }
+
+    // Print the welcome message box with the shell information -> text is in Cyan
     printf("###############################################################################################\n");
     printf("##                                                                                           ##\n");
-    printf("##                                  Welcome to CustomShell!                                  ##\n");
-    printf("##                                Author: Conor Weir (23418374)                              ##\n");
+    printf("##                                  \033[0;36mWelcome to CustomShell!\033[0m                                  ##\n");
+    printf("##                                \033[0;36mAuthor: Conor Weir (23418374)\033[0m                              ##\n");
     printf("##                                                                                           ##\n");
-    printf("##                            Type \"help\" for a list of commands.                            ##\n");
+    printf("##                            \033[0;36mType \"help\" for a list of commands.\033[0m                            ##\n");
     printf("##                                                                                           ##\n");
-    printf("##                            Type \"quit\" to exit the shell.                                 ##\n");
+    printf("##                            \033[0;36mType \"quit\" to exit the shell.\033[0m                                 ##\n");
     printf("##                                                                                           ##\n");
     printf("###############################################################################################\n");
+    printf("\n"); // New line to space out the user message from the welcome message
+    printf("\033[0;32mWelcome %s!\033[0m \n", user); // Print user message in Green
+    printf("\n"); // New line to space out the prompt from the welcome message
 }
 
 // Function to get the shell prompt based on the current working directory	
