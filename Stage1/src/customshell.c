@@ -30,6 +30,10 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    //
+    // set_shell_path(); // Set the SHELL environment variable to the path of the shell
+    //
+
     // COULD THIS IF STATEMENT BE A FUNCTION??
     // Check if a batch file was passed as an argument
     if(!argv[1])
@@ -51,7 +55,7 @@ int main(int argc, char *argv[]) {
     while (!feof(stdin)) { 
 
         // Display prompt
-        printf("\033[0;33m"); // Set text colour to yellow
+        printf("\033[0;32m"); // Set text colour to Green
         printf("<%s>$ ", prompt); // Print prompt in yellow
         printf("\033[0m"); // Reset text colour
         fflush(stdout); // Ensure output is printed immediately

@@ -36,9 +36,34 @@ void start_up_shell()
     printf("##                                                                                           ##\n");
     printf("###############################################################################################\n");
     printf("\n"); // New line to space out the user message from the welcome message
-    printf("\033[0;32mWelcome %s!\033[0m \n", user); // Print user message in Green
+    printf("\033[0;34mWelcome %s!\033[0m \n", user); // Print user message in Blue
     printf("\n"); // New line to space out the prompt from the welcome message
 }
+
+// void set_shell_path()
+// {
+//     char cwd[MAX_PATH];    // Current working directory 
+    
+//     getcwd(cwd, sizeof(cwd)); // Get current working directory
+//     // Error handling for getcwd
+//     if(cwd == NULL)
+//     {
+//         printf("Error: Could not get the Current Working Directory\n");
+//         exit(1);
+//     }
+
+//     // COULD THIS BE A FUNCTION??
+//     char shell_path[MAX_PATH]; // Create variable to store the path of the shell
+//     strcpy(shell_path, cwd); // Copy the current working directory to the shell path
+//     strcat(shell_path, "/customshell"); // Append the name of the shell to the shell path to get the full SHELL enviorment variable path
+    
+//     if(setenv("SHELL", shell_path, 1) != 0) // Set the environment variable SHELL to the path of the shell
+//     {
+//         // Error handling for setenv -> if setenv returns a non-zero value, print error message and exit
+//         printf("Error: Could not set the SHELL environment variable\n");
+//         exit(1);
+//     }
+// }
 
 // Function to get the shell prompt based on the current working directory	
 char *get_prompt()
@@ -151,6 +176,9 @@ void execute_command(char **args)
 // CURRENT ERROR:
 // NONE
 
+// REMOVE:
+// set_shell_path(); FUNCTION POSSIBLY -> COME BACK TO IT
+
 // LEFT TO ADD:
 // UPDATE LS COMMAND TO HAVE A PATH ARGUMENT -> DONE
 // ECHO COMMAND -> DONE
@@ -158,13 +186,13 @@ void execute_command(char **args)
 // HELP COMMAND -> DONE
 // UPDATE THE SHELL=/CUSTOMSHELL
 // BATCH FILE SUPPORT -> DONE
-// CREATE A COMMANDS.C FILE CONTAINING ALL COMMAND FUNCTIONS
+// CREATE A COMMANDS.C FILE CONTAINING ALL COMMAND FUNCTIONS -> DONE
 // PUT THE SETENV SHELL INTO A FUNCTION
 // ADD ERROR HANDLING FOR BATCH FILE
 // CHECK TO SEE IF FORK AND EXEC CAN BE USED -> might not be till stage 2 for external commands -> ask graham
 // check is better to just use system() for the commands for clear etc or to use fork and exec
-// create the readme !!!
-// create the makefile
+// create the readme !!! -> DONE
+// create the makefile -> DONE
 
 // ADDITIONAL NOTES:
 // possibly change the execute_cd and execute_ls functions to take in a char **args variable
