@@ -1,3 +1,9 @@
+/*
+STUDENT NAME: CONOR WEIR
+STUDENT ID: 23418374
+ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
+*/
+
 #ifndef SHELL_COMMANDS_H
 #define SHELL_COMMANDS_H
 
