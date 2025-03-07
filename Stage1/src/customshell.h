@@ -26,10 +26,9 @@ extern char **environ;  // NULL terminated array of char *
 //
 
 // Helper functions
-void start_up_shell();
-void set_shell_path();
-char *get_prompt();
-void execute_batch_file(char *file);
-void execute_command(char **args);
-// void tokenize(char *input, char **args);
+void start_up_shell(); // Function to display the welcome message box
+void set_shell_path(); // Function to set the SHELL environment variable to the path of the shell executable
+char *get_prompt(); // Function to get the shell prompt based on the current working directory
+void execute_batch_file(char *file); // Function to execute a batch file
+void execute_command(char **args); // Function to check and execute a given command
 

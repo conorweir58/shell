@@ -15,19 +15,25 @@ void start_up_shell()
 {
     // variables for storing the user name
     char user[MAX_BUFFER];  // User name buffer
-    char* pTmp;
+    char* pTmp; // Temporary pointer for storing the user name
 
-    // Get the user name from the USER environment variable
+    // Get the user name from the USER environment variable and store it in the user variable
     if((pTmp = getenv("USER")))
     {
         // if it works -> copy the user name to the user variable
         strcpy(user, pTmp);
+
+        if(user == NULL)
+        {
+            fprintf(stderr, "Error: Could not retrieve USER variable.\n"); // Print error message to stderr -> don't use perror as no relevant error message possible with it
+            strcpy(user, "User"); // Set the user name to "User" as a default
+        }
     }
     else
     {
         // if it doesn't work -> print error message and set the user name to "User"
-        fprintf(stderr, "Could not retrieve USER variable.\n");
-        strcpy(user, "User");
+        fprintf(stderr, "Could not retrieve USER variable.\n"); // Print error message to stderr
+        strcpy(user, "User"); // Set the user name to "User" as a default
     }
 
     // Print the welcome message box with the shell information -> text is in Cyan
@@ -50,12 +56,10 @@ void set_shell_path()
 {
     char cwd[MAX_PATH];    // Current working directory 
     
-    getcwd(cwd, sizeof(cwd)); // Get current working directory
-    // Error handling for getcwd
-    if(cwd == NULL)
+    if(getcwd(cwd, sizeof(cwd)) == NULL) // Get current working directory
     {
-        printf("Error: Could not get the Current Working Directory\n");
-        exit(1);
+        perror("Could not retrieve the Current Working Directory"); // Print error message along with the error message from the system
+        exit(1); // Exit the shell 
     }
 
     char shell_path[MAX_PATH]; // Create variable to store the path of the shell
@@ -65,8 +69,8 @@ void set_shell_path()
     if(setenv("SHELL", shell_path, 1) != 0) // Set the environment variable SHELL to the path of the shell
     {
         // Error handling for setenv -> if setenv returns a non-zero value, print error message and exit
-        printf("Error: Could not set the SHELL environment variable\n");
-        exit(1);
+        fprintf(stderr, "Error: Could not set the SHELL environment variable\n"); // Print error message to stderr
+        exit(1); // Exit the shell
     }
 }
 
@@ -74,13 +78,10 @@ void set_shell_path()
 char *get_prompt()
 {
     static char cwd[MAX_PATH];    // Current working directory -> static so it doesn't get destroyed after the function ends
-    getcwd(cwd, sizeof(cwd)); // Get current working directory
-
-    // Error handling for getcwd
-    if(cwd == NULL)
+    if(getcwd(cwd, sizeof(cwd)) == NULL) // Get current working directory
     {
-        printf("Error: Could not get the Current Working Directory\n");
-        exit(1);
+        perror("Could not retrieve the Current Working Directory"); // Print error message along with the error message from the system
+        return "CustomShell"; // Return a Default prompt if the current working directory cannot be retrieved
     }
 
     char *prompt = cwd;  // Shell prompt
@@ -102,9 +103,9 @@ void execute_batch_file(char *file)
         while (fgets(buf, MAX_BUFFER, pfile))
         {            
             // Tokenize input into args array
-            arg = args;
+            arg = args; // Set arg to the start of the args array
             *arg++ = strtok(buf, SEPARATORS);
-            while ((*arg++ = strtok(NULL, SEPARATORS)));
+            while ((*arg++ = strtok(NULL, SEPARATORS))); // Loop through the input and tokenize it into the args array
             
             // If input is not empty, process command
             if (args[0])
@@ -117,7 +118,7 @@ void execute_batch_file(char *file)
     }
     else
     {
-        printf("Error: Could not open batch file!\n");
+        perror("Could not open batch file!"); // Print error message along with the error message from the system
         exit(1); // Exit the shell -> possibly change to return an error code
     }
 }
@@ -148,15 +149,15 @@ void execute_command(char **args)
         // if there is more than one path after cd, print an error message -> checking for both args[1] and args[2] makes sure cd on its own still works
         if(args[1] && args[2])
         {
-            printf("Error: Too many arguments for command \"cd\"!\n");
-            return;
+            fprintf(stderr, "Error: Too many arguments for command \"cd\"!\n"); // Print error message to stderr
+            return; // Return to the main loop
         }
 
         // set path to the first argument after cd, if there is none, the path becomes NULL
         char *path = args[1];
-        execute_cd(path);
+        execute_cd(path); // Call the execute_cd function with the path
 
-        get_prompt();
+        get_prompt(); // Update the prompt after changing directory
     }
     else if (!strcmp(args[0], "echo"))
     {

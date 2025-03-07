@@ -27,14 +27,13 @@ int main(int argc, char *argv[]) {
     else
     {
         // if batch file - call batch file function and pass it the batch file
-        strcpy(file, argv[1]);
-        execute_batch_file(file);
-        // execute the batch file and exits the shell to prevent further input
+        strcpy(file, argv[1]); // Copy the batch file path to the file buffer
+        execute_batch_file(file); // execute the batch file and exits the shell to prevent further input
     }
 
-    char *prompt = get_prompt();
+    char *prompt = get_prompt(); // Get the shell prompt using get_prompt function (in utility.c)
 
-    // Main input loop
+    // Main input loop -> Loops until quit or EOF2
     while (!feof(stdin)) { 
 
         // Display prompt
@@ -47,9 +46,9 @@ int main(int argc, char *argv[]) {
         if (fgets(buf, MAX_BUFFER, stdin)) { 
 
             // Tokenize input into args array
-            arg = args;
-            *arg++ = strtok(buf, SEPARATORS);
-            while ((*arg++ = strtok(NULL, SEPARATORS)));
+            arg = args; // Set arg to the start of the args array
+            *arg++ = strtok(buf, SEPARATORS); 
+            while ((*arg++ = strtok(NULL, SEPARATORS))); // Loop through the input and tokenize it into the args array
 
             // If input is not empty, process command
             if (args[0]) {
@@ -58,5 +57,6 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+
     return 0;
 }

@@ -17,7 +17,7 @@ void execute_clear() {
 
 // Function to execute the "quit" command
 void execute_quit() {
-    exit(0); // Exits the shell
+    exit(0); // Exits the shell successfully
 }
 
 void execute_ls(char *path)
@@ -26,10 +26,18 @@ void execute_ls(char *path)
     {
         char *command = malloc(strlen("ls -al ") + strlen(path) + 1); // Allocate memory for the command (enough for the command and the path)
 
+        if(command == NULL) // Check if malloc was successful
+        {
+            perror("Could not allocate memory for the command"); // Print error message along with the error message from the system
+            return; // return back to main input loop
+        }
+
         strcpy(command, "ls -al "); // Copy the ls -al command to the command
         strcat(command, path); // Append the path to the command
         system(command); // Execute the command
+
         free(command); // Free the malloc'd memory
+        command = NULL; // Set the command to NULL
         return;
     }
     else
@@ -41,12 +49,12 @@ void execute_ls(char *path)
 void execute_cd(char *path)
 {
     char cwd[MAX_PATH];    // Current working directory
-    getcwd(cwd, sizeof(cwd)); // Get current working directory
-    // Error handling for getcwd
-    if(cwd == NULL)
+    // getcwd(cwd, sizeof(cwd)); // Get current working directory
+
+    if(getcwd(cwd, sizeof(cwd)) == NULL) // Get current working directory
     {
-        printf("Error: Could not get the Current Working Directory\n");
-        exit(1);
+        perror("Could not retrieve the Current Working Directory"); // Print error message along with the error message from the system
+        exit(1); // exit the shell
     }
 
     // if there is no path, print current working directory
@@ -67,12 +75,10 @@ void execute_cd(char *path)
     setenv("OLDPWD", cwd, 1);
 
     // update cwd to the new Current Working Directory after chdir(path)
-    getcwd(cwd, sizeof(cwd)); // Get current working directory
-    // Error handling for getcwd
-    if(cwd == NULL)
+    if(getcwd(cwd, sizeof(cwd)) == NULL) // Get current working directory
     {
-        printf("Error: Could not get the Current Working Directory\n");
-        exit(1);
+        perror("Could not retrieve the Current Working Directory"); // Print error message along with the error message from the system
+        exit(1); // exit the shell
     }
 
     // set the environment variable PWD to the new path of the CWD
@@ -111,12 +117,11 @@ void execute_help()
 {
     // For changing back to where the User is after displaying the manual
     char cwd[MAX_PATH];    // Current working directory
-    getcwd(cwd, sizeof(cwd)); // Get current working directory
-    // Error handling for getcwd
-    if(cwd == NULL)
+
+    if(getcwd(cwd, sizeof(cwd)) == NULL) // Get current working directory
     {
-        printf("Error: Could not get the Current Working Directory\n");
-        exit(1);
+        perror("Could not retrieve the Current Working Directory"); // Print error message along with the error message from the system
+        exit(1); // exit the shell
     }
 
     char *shell_path = getenv("SHELL"); // Stores path to the shell executable
@@ -135,22 +140,32 @@ void execute_help()
         }
         else
         {
-            printf("Error: Failed to extract last directory\n"); // Error handling for strrchr
-            return;
+            fprintf(stderr, "Error: Failed to extract last directory\n"); // Error handling for strrchr -> fprintf to stderr as no relevant error message possible with perror
+            return; // Return to prevent further execution
         }
     }
     else
     {
-        printf("Error: Could not get the Shell Path\n"); // Error handling for getting SHELL environment variable
+        fprintf(stderr, "Error: Could not get the Shell Path\n"); // Error handling for getting SHELL environment variable -> fprintf to stderr as no relevant error message possible with perror
+        return; // Return to prevent further execution
+    }
+
+    if (chdir(shell_path_copy) == -1) // Change directory to the shell path without the executable name -> ensures the manual is found
+    {
+        perror("Error changing directory to shell path"); 
         return;
     }
 
-    chdir(shell_path_copy); // Change directory to the shell path without the executable name -> ensures the manual is found
     system("more -d ./manual/readme"); // Display the manual using the more filter -> -d flag to allow for navigation prompt
-    chdir(cwd); // Change directory back to the original working directory
+
+    if (chdir(cwd) == -1) // Change directory back to the original working directory
+    {
+        perror("Error returning to previous directory");
+    }
 }
 
 void command_not_found(char *arg)
 {
     printf("%s: Command not found\n", arg);
 }
+
