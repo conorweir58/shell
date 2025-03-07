@@ -1,3 +1,9 @@
+/*
+STUDENT NAME: CONOR WEIR
+STUDENT ID: 23418374
+ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
+*/
+
 #include "customshell.h"
 #include "shell_commands.h"
 
@@ -83,10 +89,10 @@ char *get_prompt()
 
 void execute_batch_file(char *file)
 {
-    FILE *pfile = NULL;
-    pfile = fopen(file, "r");
+    FILE *pfile = NULL; // Initialize file pointer
+    pfile = fopen(file, "r"); // Open the batch file in read mode using the file path
 
-    if (pfile)
+    if (pfile) // If the file exists and was opened successfully process the batch file
     {
         char buf[MAX_BUFFER];  // Input buffer
         char *args[MAX_ARGS];  // Array of argument strings
@@ -103,12 +109,11 @@ void execute_batch_file(char *file)
             // If input is not empty, process command
             if (args[0])
             {
-                // call execute command function which will process the command
-                execute_command(args);
+                execute_command(args); // call execute command function which will process the command
             }
         }
-        fclose(pfile);
-        execute_quit();
+        fclose(pfile); // Close the batch file
+        execute_quit(); // Exits the shell after the batch file is processed
     }
     else
     {
