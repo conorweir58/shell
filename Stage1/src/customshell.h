@@ -21,7 +21,7 @@ extern char **environ;  // NULL terminated array of char *
 
 // Helper functions
 void start_up_shell();
-// void set_shell_path();
+void set_shell_path();
 char *get_prompt();
 void execute_batch_file(char *file);
 void execute_command(char **args);

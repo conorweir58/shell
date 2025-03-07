@@ -20,7 +20,7 @@ void start_up_shell()
     else
     {
         // if it doesn't work -> print error message and set the user name to "User"
-        fprintf( stderr, "Could not retrieve USER variable.\n");
+        fprintf(stderr, "Could not retrieve USER variable.\n");
         strcpy(user, "User");
     }
 
@@ -40,30 +40,29 @@ void start_up_shell()
     printf("\n"); // New line to space out the prompt from the welcome message
 }
 
-// void set_shell_path()
-// {
-//     char cwd[MAX_PATH];    // Current working directory 
+void set_shell_path()
+{
+    char cwd[MAX_PATH];    // Current working directory 
     
-//     getcwd(cwd, sizeof(cwd)); // Get current working directory
-//     // Error handling for getcwd
-//     if(cwd == NULL)
-//     {
-//         printf("Error: Could not get the Current Working Directory\n");
-//         exit(1);
-//     }
+    getcwd(cwd, sizeof(cwd)); // Get current working directory
+    // Error handling for getcwd
+    if(cwd == NULL)
+    {
+        printf("Error: Could not get the Current Working Directory\n");
+        exit(1);
+    }
 
-//     // COULD THIS BE A FUNCTION??
-//     char shell_path[MAX_PATH]; // Create variable to store the path of the shell
-//     strcpy(shell_path, cwd); // Copy the current working directory to the shell path
-//     strcat(shell_path, "/customshell"); // Append the name of the shell to the shell path to get the full SHELL enviorment variable path
+    char shell_path[MAX_PATH]; // Create variable to store the path of the shell
+    strcpy(shell_path, cwd); // Copy the current working directory to the shell path
+    strcat(shell_path, "/customshell"); // Append the name of the shell to the shell path to get the full SHELL enviorment variable path
     
-//     if(setenv("SHELL", shell_path, 1) != 0) // Set the environment variable SHELL to the path of the shell
-//     {
-//         // Error handling for setenv -> if setenv returns a non-zero value, print error message and exit
-//         printf("Error: Could not set the SHELL environment variable\n");
-//         exit(1);
-//     }
-// }
+    if(setenv("SHELL", shell_path, 1) != 0) // Set the environment variable SHELL to the path of the shell
+    {
+        // Error handling for setenv -> if setenv returns a non-zero value, print error message and exit
+        printf("Error: Could not set the SHELL environment variable\n");
+        exit(1);
+    }
+}
 
 // Function to get the shell prompt based on the current working directory	
 char *get_prompt()
@@ -79,7 +78,7 @@ char *get_prompt()
     }
 
     char *prompt = cwd;  // Shell prompt
-    return prompt;
+    return prompt; // Return the shell prompt to be printed in main.c
 }
 
 void execute_batch_file(char *file)
