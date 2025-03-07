@@ -103,24 +103,45 @@ void execute_pause()
 
 void execute_help()
 {
-    FILE *pfile = NULL;
-    pfile = fopen("./manual/readme", "r");
-
-    if (pfile)
+    // For changing back to where the User is after displaying the manual
+    char cwd[MAX_PATH];    // Current working directory
+    getcwd(cwd, sizeof(cwd)); // Get current working directory
+    // Error handling for getcwd
+    if(cwd == NULL)
     {
-        char c;
-        while ((c = getc(pfile)) != EOF)
+        printf("Error: Could not get the Current Working Directory\n");
+        exit(1);
+    }
+
+    char *shell_path = getenv("SHELL"); // Stores path to the shell executable
+    char shell_path_copy[MAX_PATH]; // Stores copy of the shell path
+
+    if (shell_path != NULL) // Ensure the SHELL environment variable gotten successfully
+    {
+        
+        strncpy(shell_path_copy, shell_path, sizeof(shell_path_copy) - 1); // Create a copy of the Shell Path -> ensures the original is not modified inside the environment variables
+        shell_path_copy[sizeof(shell_path_copy) - 1] = '\0'; // Ensure null termination of the copied Shell Path
+
+        char *last_slash = strrchr(shell_path_copy, '/'); // Find the last '/' character in the shell path
+        if (last_slash && *(last_slash + 1) != '\0') // If the last '/' character is found and the next character is not null
         {
-            putchar(c);
+            *last_slash = '\0'; // Set the last '/' character to null to remove the executable name from the path
         }
-        fclose(pfile);
-        putchar('\n');
+        else
+        {
+            printf("Error: Failed to extract last directory\n"); // Error handling for strrchr
+            return;
+        }
     }
     else
     {
-        printf("Error: Could not find help manual!\n");
+        printf("Error: Could not get the Shell Path\n"); // Error handling for getting SHELL environment variable
+        return;
     }
 
+    chdir(shell_path_copy); // Change directory to the shell path without the executable name -> ensures the manual is found
+    system("more -d ./manual/readme"); // Display the manual using the more filter -> -d flag to allow for navigation prompt
+    chdir(cwd); // Change directory back to the original working directory
 }
 
 void command_not_found(char *arg)
