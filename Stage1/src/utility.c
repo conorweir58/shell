@@ -175,33 +175,3 @@ void execute_command(char **args)
         command_not_found(args[0]);
     }
 }
-
-
-// CURRENT ERROR:
-// NONE
-
-// REMOVE:
-// set_shell_path(); FUNCTION POSSIBLY -> COME BACK TO IT
-
-// LEFT TO ADD:
-// UPDATE LS COMMAND TO HAVE A PATH ARGUMENT -> DONE
-// ECHO COMMAND -> DONE
-// PAUSE COMMAND -> DONE
-// HELP COMMAND -> DONE
-// UPDATE THE SHELL=/CUSTOMSHELL
-// BATCH FILE SUPPORT -> DONE
-// CREATE A COMMANDS.C FILE CONTAINING ALL COMMAND FUNCTIONS -> DONE
-// PUT THE SETENV SHELL INTO A FUNCTION
-// ADD ERROR HANDLING FOR BATCH FILE
-// CHECK TO SEE IF FORK AND EXEC CAN BE USED -> might not be till stage 2 for external commands -> ask graham
-// check is better to just use system() for the commands for clear etc or to use fork and exec
-// create the readme !!! -> DONE
-// create the makefile -> DONE
-
-// ADDITIONAL NOTES:
-// possibly change the execute_cd and execute_ls functions to take in a char **args variable
-// check error handling for all functions -> using fopen, freopen, etc you should check the return status and indicate if an error has occurred, and take appropriate action.
-// check if possible to make sure pause doesn't try to run a command
-// check if get_prompt should use a static variable and if so should i not init it every time its called
-// add an error message function that takes in an integer based on the error and prints the appropriate error message
-// add a description to each file
