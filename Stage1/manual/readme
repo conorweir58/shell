@@ -4,6 +4,15 @@
 #####                               #####
 #########################################
 
+##                    ##
+## ACADEMIC INTEGRITY ##
+##                    ##
+
+STUDENT NAME: Conor Weir
+STUDENT NUMBER: 23418374
+ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
+
+
 ##            ##
 ## DESCRIPTON ##
 ##            ##
@@ -17,43 +26,43 @@
 ##                         ##
 
 # COMMAND: cd [directory path]
-Change the current default directory.
-If no directory path given, reports the current working directory.
+    Change the current default directory.
+    If no directory path given, reports the current working directory.
 
 # COMMAND: clr
-Clears the screen of the terminal.
+    Clears the screen of the terminal.
 
 # COMMAND: dir [directory path]
-Lists the contents of directory at given directory path.
-If no directory path given, lists the contents of the current working directory.
+    Lists the contents of directory at given directory path.
+    If no directory path given, lists the contents of the current working directory.
 
 # COMMAND: environ
-Lists all the environment strings.
+    Lists all the environment strings.
 
 # COMMAND: echo [string]
-Output a string to the terminal.
+    Output a string to the terminal.
 
 # COMMAND: help
-Display shell user manual.
+    Display shell user manual.
 
 # COMMAND: pause
-Pause operation of the shell until 'Enter' key is pressed.
+    Pause operation of the shell until 'Enter' key is pressed.
 
 # COMMAND: quit
-Exit the shell.
+    Exit the shell.
 
 ##                                    ##
 ## BATCH FILE EXECUTION COMPATABILITY ##
 ##                                    ##
 
-# PASSING A BATCH FILE
-In order to pass a Batch File to the shell, the user must pass the file path as an argument when running the shell.
-The path to the shell executable must be argument 1 (argv[0]) and the path to the batch file must be argument 2 (argv[1]). E.g. "./customshell batch_file"
-The shell will then execute the commands in the batch file in order, from the beginning to the end of the file.
+# PASSING A BATCH FILE:
+    In order to pass a Batch File to the shell, the user must pass the file path as an argument when running the shell.
+    The path to the shell executable must be argument 1 (argv[0]) and the path to the batch file must be argument 2 (argv[1]). E.g. "./customshell batch_file"
+    The shell will then execute the commands in the batch file in order, from the beginning to the end of the file.
 
-# THE BATCH FILE
-The batch file must contain a list of commands, each on a new line.
-The shell will execute each command in the order they appear in the file.
+# THE BATCH FILE:
+    The batch file must contain a list of commands, each on a new line.
+    The shell will execute each command in the order they appear in the file.
 
-# EXITING THE SHELL FROM A BATCH FILE
-The shell will automatically exit once the End of File (EOF) is reached in the batch file.
+# EXITING THE SHELL FROM A BATCH FILE:
+    The shell will automatically exit once the End of File (EOF) is reached in the batch file.
