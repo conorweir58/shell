@@ -1,0 +1,12 @@
+echo environ:
+environ
+echo cd:
+cd
+echo environ:
+environ
+echo cd:
+cd ../
+echo help:
+help
+echo environ:
+environ
