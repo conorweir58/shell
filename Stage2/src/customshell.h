@@ -11,6 +11,8 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h> 
+#include <sys/types.h>	
 
 #define MAX_BUFFER 1024    // Max line buffer size
 #define MAX_ARGS 64        // Max number of arguments
