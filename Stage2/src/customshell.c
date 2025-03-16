@@ -31,10 +31,10 @@ int main(int argc, char *argv[]) {
         execute_batch_file(file); // execute the batch file and exits the shell to prevent further input
     }
 
-    char *prompt = get_prompt(); // Get the shell prompt using get_prompt function (in utility.c)
-
     // Main input loop -> Loops until quit or EOF2
     while (!feof(stdin)) { 
+
+        char *prompt = get_prompt(); // Get the shell prompt using get_prompt function (in utility.c)
 
         // Display prompt
         printf("\033[0;32m"); // Set text colour to Green
