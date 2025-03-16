@@ -22,4 +22,4 @@ void execute_cd(char *path); // Function to execute the "cd" command -> changes 
 void execute_echo(char **args); // Function to execute the "echo" command -> prints the arguments passed to it
 void execute_pause(); // Function to execute the "pause" command -> prompts the user to press enter to continue
 void execute_help(); // Function to execute the "help" command -> displays the user manual
-void command_not_found(char *args); // Function to print an error message when a command is not found
+void execute_external_command(char **args); // Function to execute external commands
