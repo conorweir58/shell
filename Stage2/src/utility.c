@@ -157,7 +157,7 @@ void execute_command(char **args)
         char *path = args[1];
         execute_cd(path); // Call the execute_cd function with the path
 
-        get_prompt(); // Update the prompt after changing directory
+        // get_prompt(); // Update the prompt after changing directory
     }
     else if (!strcmp(args[0], "echo"))
     {
@@ -173,6 +173,13 @@ void execute_command(char **args)
     }
     else
     {
-        command_not_found(args[0]);
+        execute_external_command(args);
     }
+
+
+
+    // else
+    // {
+    //     command_not_found(args[0]); // Print error message if command is not found
+    // }
 }
