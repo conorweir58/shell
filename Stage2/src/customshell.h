@@ -33,4 +33,4 @@ void set_shell_path(); // Function to set the SHELL environment variable to the 
 char *get_prompt(); // Function to get the shell prompt based on the current working directory
 void execute_batch_file(char *file); // Function to execute a batch file
 void execute_command(char **args); // Function to check and execute a given command
-
+int check_background(char **args); // Function to check if the command should be run in the background

@@ -164,8 +164,91 @@ void execute_help()
     }
 }
 
-void command_not_found(char *arg)
+void execute_external_command(char **args)
 {
-    printf("%s: Command not found\n", arg);
+    char *shell_path = getenv("SHELL"); // Stores path to the shell executable
+
+    if (shell_path != NULL) // Ensure the SHELL environment variable gotten successfully
+    {
+        setenv("PARENT", shell_path, 1); // Set the PARENT environment variable to the path of the shell executable
+    }
+    else
+    {
+        fprintf(stderr, "Error: Could not get the Shell Path\n"); // Error handling for getting SHELL environment variable -> fprintf to stderr as no relevant error message possible with perror
+        return; // Return to prevent further execution
+    }
+
+    pid_t pid; // Process ID
+    int status; // Status of the child process
+
+    switch(pid = fork())
+    {
+        case -1: // Fork failed
+            perror("Fork failed"); // Print error message along with the error message from the system
+            exit(1); // Exit the shell
+        case 0: // Child process
+            if (execvp(args[0], args) == -1) // Execute the command
+            {
+                fprintf(stderr, "Unable to execute command: %s\n", args[0]); // Error message for failed exec -> no relevant perror message so using fprintf
+            }
+            exit(1); // Exit the child process
+        default: // Parent process
+            waitpid(pid, &status, WUNTRACED); // Wait for the child process to finish
+    }
 }
 
+void execute_command_background(char **args)
+{
+    char *shell_path = getenv("SHELL"); // Stores path to the shell executable
+
+    if (shell_path != NULL) // Ensure the SHELL environment variable gotten successfully
+    {
+        setenv("PARENT", shell_path, 1); // Set the PARENT environment variable to the path of the shell executable
+    }
+    else
+    {
+        fprintf(stderr, "Error: Could not get the Shell Path\n"); // Error handling for getting SHELL environment variable -> fprintf to stderr as no relevant error message possible with perror
+        return; // Return to prevent further execution
+    }
+
+    while(*args) // Loop through the arguments
+    {
+        if (!strcmp(*args, "&")) // If the argument is "&"
+        {
+            *args = NULL; // Set the argument to NULL
+            break; // Break out of the loop
+        }
+
+        args++; // Move to the next argument
+    }
+
+    pid_t pid; // Process ID
+
+    switch(pid = fork())
+    {
+        case -1: // Fork failed
+            perror("Fork failed"); // Print error message along with the error message from the system
+            exit(1); // Exit the shell
+        case 0: // Child process
+            if (execvp(args[0], args) == -1) // Execute the command
+            {
+                fprintf(stderr, "Unable to execute command: %s\n", args[0]); // Error message for failed exec -> no relevant perror message so using fprintf
+            }
+            exit(1); // Exit the child process
+    }
+}
+
+// void command_not_found(char *arg)
+// {
+//     printf("%s: Command not found\n", arg);
+// }
+    
+    
+// while(waitpid(pid, &status, WUNTRACED) != pid); // Wait for the child process to finish -> WORKS
+
+// LEFT TO ADD:
+// Add PARENT env variable to execute_external_command -> revise comments -> check if it needs to be updated elsewhere too
+// Add command_not_found function to execute_external_command/error handling for command not found -> better error ahndling
+// background execution
+// I/O redirection
+// Make everything work for batch file

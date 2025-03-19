@@ -108,9 +108,17 @@ void execute_batch_file(char *file)
             while ((*arg++ = strtok(NULL, SEPARATORS))); // Loop through the input and tokenize it into the args array
             
             // If input is not empty, process command
-            if (args[0])
+            if(args[0])
             {
-                execute_command(args); // call execute command function which will process the command
+                // Check if the command should be run in the background
+                if(check_background(args))
+                {
+                    execute_command_background(args); // Process the command in the background
+                }
+                else
+                {
+                execute_command(args); // Process the command normally
+                }
             }
         }
         fclose(pfile); // Close the batch file
@@ -157,7 +165,6 @@ void execute_command(char **args)
         char *path = args[1];
         execute_cd(path); // Call the execute_cd function with the path
 
-        // get_prompt(); // Update the prompt after changing directory
     }
     else if (!strcmp(args[0], "echo"))
     {
@@ -175,11 +182,43 @@ void execute_command(char **args)
     {
         execute_external_command(args);
     }
+}
+
+int check_background(char **args)
+{
+    // List of internal commands
+    char *internal_commands[] = 
+    {
+        "clr",
+        "quit",
+        "dir",
+        "environ",
+        "cd",
+        "echo",
+        "pause",
+        "help"
+    };
 
 
+    for (int i = 0; i < sizeof(internal_commands)/sizeof(internal_commands[0]); i++) // Loop through the internal commands array
+    {
+        if (!strcmp(args[0], internal_commands[i]))
+        {
+            return 0; // Return 0 if the command is an internal command -> will not be run in the background
+        }
+    }
 
-    // else
-    // {
-    //     command_not_found(args[0]); // Print error message if command is not found
-    // }
+    int last_index = 0; // Int for storing position of the last argument in args
+    while(args[last_index] != NULL) // Loop through the args array to find where it becomes NULL
+    {
+        last_index++; // Increment the last_index
+    }
+    last_index--; // Decrement the last_index to get the last valid argument
+
+    if (last_index >= 0 && (!strcmp(args[last_index], "&"))) // Check that the last argument is "&" and prevent out of bounds access of last_index
+    {
+        return 1; // Return 1 if the command should be run in the background
+    }
+
+    return 0; // Return 0 if the command should not be run in the background
 }

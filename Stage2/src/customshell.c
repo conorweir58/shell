@@ -51,9 +51,17 @@ int main(int argc, char *argv[]) {
             while ((*arg++ = strtok(NULL, SEPARATORS))); // Loop through the input and tokenize it into the args array
 
             // If input is not empty, process command
-            if (args[0]) {
-                // call execute command function which will process the command
-                execute_command(args);
+            if(args[0])
+            {
+                // Check if the command should be run in the background
+                if(check_background(args))
+                {
+                    execute_command_background(args); // Process the command in the background
+                }
+                else
+                {
+                execute_command(args); // Process the command normally
+                }
             }
         }
     }

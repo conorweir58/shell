@@ -1,13 +1,3 @@
-environ
-pause
-cd
-cd ../
-pause
-dir
-cd
-echo hello there
-pause
-environ
-pause
-help
-environ
+ls
+sleep 5
+ls
