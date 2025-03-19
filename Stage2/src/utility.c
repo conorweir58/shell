@@ -110,15 +110,7 @@ void execute_batch_file(char *file)
             // If input is not empty, process command
             if(args[0])
             {
-                // Check if the command should be run in the background
-                if(check_background(args))
-                {
-                    execute_command_background(args); // Process the command in the background
-                }
-                else
-                {
-                execute_command(args); // Process the command normally
-                }
+                execute_command(args); // Process the command
             }
         }
         fclose(pfile); // Close the batch file
@@ -131,60 +123,7 @@ void execute_batch_file(char *file)
     }
 }
 
-void execute_command(char **args)
-{
-    // List of commands
-    if (!strcmp(args[0], "clr"))
-    {
-        execute_clear();
-    }
-    else if (!strcmp(args[0], "quit"))
-    {
-        execute_quit();
-    }
-    else if (!strcmp(args[0], "dir"))
-    {
-        char *path = args[1];
-
-        execute_ls(path);
-    }
-    else if (!strcmp(args[0], "environ"))
-    {
-        execute_environ();
-    }
-    else if (!strcmp(args[0], "cd"))
-    {
-        // if there is more than one path after cd, print an error message -> checking for both args[1] and args[2] makes sure cd on its own still works
-        if(args[1] && args[2])
-        {
-            fprintf(stderr, "Error: Too many arguments for command \"cd\"!\n"); // Print error message to stderr
-            return; // Return to the main loop
-        }
-
-        // set path to the first argument after cd, if there is none, the path becomes NULL
-        char *path = args[1];
-        execute_cd(path); // Call the execute_cd function with the path
-
-    }
-    else if (!strcmp(args[0], "echo"))
-    {
-        execute_echo(args);
-    }
-    else if (!strcmp(args[0], "pause"))
-    {
-        execute_pause();
-    }
-    else if (!strcmp(args[0], "help"))
-    {
-        execute_help();
-    }
-    else
-    {
-        execute_external_command(args);
-    }
-}
-
-int check_background(char **args)
+int check_internal(char **args)
 {
     // List of internal commands
     char *internal_commands[] = 
@@ -199,13 +138,97 @@ int check_background(char **args)
         "help"
     };
 
-
     for (int i = 0; i < sizeof(internal_commands)/sizeof(internal_commands[0]); i++) // Loop through the internal commands array
     {
         if (!strcmp(args[0], internal_commands[i]))
         {
-            return 0; // Return 0 if the command is an internal command -> will not be run in the background
+            return 1; // Return 1 if the command is an internal command
         }
+    }
+
+    return 0; // Return 0 if the command is an external command
+}
+
+void execute_command(char **args)
+{
+    if(check_internal(args))
+    {
+        // List of commands
+        if (!strcmp(args[0], "clr"))
+        {
+            execute_clear();
+        }
+        else if (!strcmp(args[0], "quit"))
+        {
+            execute_quit();
+        }
+        else if (!strcmp(args[0], "dir"))
+        {
+            io_redirection(args);
+
+            char *path = args[1];
+
+            execute_ls(path);
+
+            freopen("/dev/tty", "w", stdout);
+            freopen("/dev/tty", "r", stdin);
+        }
+        else if (!strcmp(args[0], "environ"))
+        {
+            io_redirection(args);
+
+            execute_environ();
+
+            freopen("/dev/tty", "w", stdout);
+            freopen("/dev/tty", "r", stdin);
+        }
+        else if (!strcmp(args[0], "cd"))
+        {
+            // if there is more than one path after cd, print an error message -> checking for both args[1] and args[2] makes sure cd on its own still works
+            if(args[1] && args[2])
+            {
+                fprintf(stderr, "Error: Too many arguments for command \"cd\"!\n"); // Print error message to stderr
+                return; // Return to the main loop
+            }
+
+            // set path to the first argument after cd, if there is none, the path becomes NULL
+            char *path = args[1];
+            execute_cd(path); // Call the execute_cd function with the path
+        }
+        else if (!strcmp(args[0], "echo"))
+        {
+            io_redirection(args);
+
+            execute_echo(args);
+
+            freopen("/dev/tty", "w", stdout);
+            freopen("/dev/tty", "r", stdin);
+        }
+        else if (!strcmp(args[0], "pause"))
+        {
+            execute_pause();
+        }
+        else if (!strcmp(args[0], "help"))
+        {
+            io_redirection(args);
+
+            execute_help();
+
+            freopen("/dev/tty", "w", stdout);
+            freopen("/dev/tty", "r", stdin);
+        }
+    }
+    else
+    {
+        execute_external_command(args);
+    }
+}
+
+int check_background(char **args)
+{
+    if(check_internal(args)) // If the command is internal
+    {
+        return 0; // Return 0 -> command should not be run in background
     }
 
     int last_index = 0; // Int for storing position of the last argument in args
@@ -221,4 +244,74 @@ int check_background(char **args)
     }
 
     return 0; // Return 0 if the command should not be run in the background
+}
+
+void io_redirection(char **args)
+{
+    // Initialize char and file pointers for input/output redirection
+    char *pfile_in = NULL; // char pointer for input redirection file name
+    char *pfile_out = NULL; // char pointer for output redirection file name
+
+    // Initialize I/O flags
+    int stdin_flag = 0; // Flag for input redirection
+    int stdout_flag = 0; // Flag for output redirection
+    int append_flag = 0; // Flag for appending to a file
+
+    // Loop through the arguments to find I/O redirection symbols
+    int i =0;
+    while(args[i] != NULL)
+    {
+        if(!strcmp(args[i], "<")) // Check for input redirection symbol
+        {
+            stdin_flag = 1; // Set the input redirection flag
+            args[i] = NULL; // Set the argument to NULL -> removes the redirection symbol
+            i++; // Move to the next argument which should be the stdin file path
+            
+            pfile_in = args[i]; // Set the file pointer for input redirection to the provided file path
+        }
+
+        if(!strcmp(args[i], ">"))
+        {
+            stdout_flag = 1; // Set the output redirection flag
+            args[i] = NULL; // Set the argument to NULL -> removes the redirection symbol
+            i++; // Move to the next argument which should be the stdout file path
+
+            pfile_out = args[i]; // Set the file pointer for output redirection to the provided file path
+        }
+
+        if(!strcmp(args[i], ">>"))
+        {
+            append_flag = 1; // Set the output redirection flag
+            args[i] = NULL; // Set the argument to NULL -> removes the redirection symbol
+            i++; // Move to the next argument which should be the stdout file path
+
+            pfile_out = args[i]; // Set the file pointer for output redirection to the provided file path
+        }
+
+        // Move to next argument
+        i++;
+    }
+
+    if(stdin_flag)
+    {
+        if(freopen(pfile_in, "r", stdin) == NULL)
+        {
+            perror("Could not open Input file");
+        }
+    }
+
+    if(stdout_flag)
+    {
+        if(freopen(pfile_out, "w", stdout) == NULL)
+        {
+            perror("Could not open Output file to write to");
+        }
+    }
+    else if(append_flag)
+    {
+        if(freopen(pfile_out, "a", stdout) == NULL)
+        {
+            perror("Could not open Output file to append to");
+        }
+    }
 }

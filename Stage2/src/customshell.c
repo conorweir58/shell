@@ -53,15 +53,7 @@ int main(int argc, char *argv[]) {
             // If input is not empty, process command
             if(args[0])
             {
-                // Check if the command should be run in the background
-                if(check_background(args))
-                {
-                    execute_command_background(args); // Process the command in the background
-                }
-                else
-                {
-                execute_command(args); // Process the command normally
-                }
+                execute_command(args); // Process the command
             }
         }
     }

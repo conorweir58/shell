@@ -180,6 +180,9 @@ void execute_external_command(char **args)
 
     pid_t pid; // Process ID
     int status; // Status of the child process
+    int background_flag = 0; // Flag for checking if the command should be run as a background process
+
+    background_flag = check_background(args);
 
     switch(pid = fork())
     {
@@ -187,68 +190,54 @@ void execute_external_command(char **args)
             perror("Fork failed"); // Print error message along with the error message from the system
             exit(1); // Exit the shell
         case 0: // Child process
+
+            if(background_flag)
+            {
+                int i = 0;
+                while (args[i] != NULL) // Loop through args until we reach the end (NULL)
+                {
+                    if (strcmp(args[i], "&") == 0) // When we reach the "&" -> know it exists due to our check_background
+                    {
+                        args[i] = NULL; // Remove the "&" from the args
+                        break;
+                    }
+                    i++; // increment through arguments
+                }
+            }
+
+            io_redirection(args); // Process I/O redirection for the command
+
             if (execvp(args[0], args) == -1) // Execute the command
             {
                 fprintf(stderr, "Unable to execute command: %s\n", args[0]); // Error message for failed exec -> no relevant perror message so using fprintf
             }
             exit(1); // Exit the child process
         default: // Parent process
-            waitpid(pid, &status, WUNTRACED); // Wait for the child process to finish
-    }
-}
-
-void execute_command_background(char **args)
-{
-    char *shell_path = getenv("SHELL"); // Stores path to the shell executable
-
-    if (shell_path != NULL) // Ensure the SHELL environment variable gotten successfully
-    {
-        setenv("PARENT", shell_path, 1); // Set the PARENT environment variable to the path of the shell executable
-    }
-    else
-    {
-        fprintf(stderr, "Error: Could not get the Shell Path\n"); // Error handling for getting SHELL environment variable -> fprintf to stderr as no relevant error message possible with perror
-        return; // Return to prevent further execution
-    }
-
-    while(*args) // Loop through the arguments
-    {
-        if (!strcmp(*args, "&")) // If the argument is "&"
-        {
-            *args = NULL; // Set the argument to NULL
-            break; // Break out of the loop
-        }
-
-        args++; // Move to the next argument
-    }
-
-    pid_t pid; // Process ID
-
-    switch(pid = fork())
-    {
-        case -1: // Fork failed
-            perror("Fork failed"); // Print error message along with the error message from the system
-            exit(1); // Exit the shell
-        case 0: // Child process
-            if (execvp(args[0], args) == -1) // Execute the command
+            if(background_flag)
             {
-                fprintf(stderr, "Unable to execute command: %s\n", args[0]); // Error message for failed exec -> no relevant perror message so using fprintf
+                printf("[Background PID: %d] %s is running\n", pid, args[0]);
             }
-            exit(1); // Exit the child process
+            else
+            {
+                waitpid(pid, &status, WUNTRACED); // Wait for the child process to finish
+            }
     }
-}
-
-// void command_not_found(char *arg)
-// {
-//     printf("%s: Command not found\n", arg);
-// }
+}   
     
-    
-// while(waitpid(pid, &status, WUNTRACED) != pid); // Wait for the child process to finish -> WORKS
-
 // LEFT TO ADD:
 // Add PARENT env variable to execute_external_command -> revise comments -> check if it needs to be updated elsewhere too
 // Add command_not_found function to execute_external_command/error handling for command not found -> better error ahndling
 // background execution
+// Add doing and done for background exec
 // I/O redirection
+// Add error handling to IO
 // Make everything work for batch file
+// Make it so the check_background function returns a 1 or 0 to a dont wait variable inside the regular execute external command function
+// Check batch file support for background exec -> prints prompt sometimes
+// Use dup to revert back to original IO stream
+
+// You may want to use the access function to check on existence or not of the files:
+
+// #include <unistd.h>
+
+// int access(const char *pathname, int mode);
