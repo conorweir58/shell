@@ -164,14 +164,23 @@ void execute_command(char **args)
         }
         else if (!strcmp(args[0], "dir"))
         {
-            io_redirection(args);
+            io_redirection(args); // Process I/O redirection for the echo
 
             char *path = args[1];
 
             execute_ls(path);
 
-            freopen("/dev/tty", "w", stdout);
-            freopen("/dev/tty", "r", stdin);
+            if(freopen("/dev/tty", "w", stdout) == NULL) // Reset stdout to the terminal
+            {
+                perror("Error: Could not reset stdout to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
+
+            if(freopen("/dev/tty", "r", stdin) == NULL) // Reset stdin to the terminal
+            {
+                perror("Error: Could not reset stdin to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
         }
         else if (!strcmp(args[0], "environ"))
         {
@@ -179,8 +188,17 @@ void execute_command(char **args)
 
             execute_environ(); // Call the execute_environ function
 
-            freopen("/dev/tty", "w", stdout); // Reset stdout to the terminal
-            freopen("/dev/tty", "r", stdin); // Reset stdin to the terminal
+            if(freopen("/dev/tty", "w", stdout) == NULL) // Reset stdout to the terminal
+            {
+                perror("Error: Could not reset stdout to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
+
+            if(freopen("/dev/tty", "r", stdin) == NULL) // Reset stdin to the terminal
+            {
+                perror("Error: Could not reset stdin to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
         }
         else if (!strcmp(args[0], "cd"))
         {
@@ -197,12 +215,21 @@ void execute_command(char **args)
         }
         else if (!strcmp(args[0], "echo"))
         {
-            io_redirection(args);
+            io_redirection(args); // Process I/O redirection for the echo
 
             execute_echo(args);
 
-            freopen("/dev/tty", "w", stdout);
-            freopen("/dev/tty", "r", stdin);
+            if(freopen("/dev/tty", "w", stdout) == NULL) // Reset stdout to the terminal
+            {
+                perror("Error: Could not reset stdout to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
+
+            if(freopen("/dev/tty", "r", stdin) == NULL) // Reset stdin to the terminal
+            {
+                perror("Error: Could not reset stdin to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
         }
         else if (!strcmp(args[0], "pause"))
         {
@@ -210,17 +237,26 @@ void execute_command(char **args)
         }
         else if (!strcmp(args[0], "help"))
         {
-            io_redirection(args);
+            io_redirection(args); // Process I/O redirection for the echo
 
             execute_help();
 
-            freopen("/dev/tty", "w", stdout);
-            freopen("/dev/tty", "r", stdin);
+            if(freopen("/dev/tty", "w", stdout) == NULL) // Reset stdout to the terminal
+            {
+                perror("Error: Could not reset stdout to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
+
+            if(freopen("/dev/tty", "r", stdin) == NULL) // Reset stdin to the terminal
+            {
+                perror("Error: Could not reset stdin to the terminal"); // Print error message along with the error message from the system
+                exit(1); // Exit the shell
+            }
         }
     }
     else
     {
-        execute_external_command(args);
+        execute_external_command(args); // Any command that is not internal is an executed through the execute_external_command function
     }
 }
 
