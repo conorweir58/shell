@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
         execute_batch_file(file); // execute the batch file and exits the shell to prevent further input
     }
 
-    // Main input loop -> Loops until quit or EOF2
+    // Main input loop -> Loops until quit or EOF
     while (!feof(stdin)) { 
 
         char *prompt = get_prompt(); // Get the shell prompt using get_prompt function (in utility.c)

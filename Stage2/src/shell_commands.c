@@ -182,7 +182,7 @@ void execute_external_command(char **args)
     int status; // Status of the child process
     int background_flag = 0; // Flag for checking if the command should be run as a background process
 
-    background_flag = check_background(args);
+    background_flag = check_background(args); // Call check_background to see if the command must be executed in the background and update background flag 
 
     switch(pid = fork())
     {
@@ -191,7 +191,7 @@ void execute_external_command(char **args)
             exit(1); // Exit the shell
         case 0: // Child process
 
-            if(background_flag)
+            if(background_flag) // If it is a command to be executed in background
             {
                 int i = 0;
                 while (args[i] != NULL) // Loop through args until we reach the end (NULL)
@@ -213,18 +213,19 @@ void execute_external_command(char **args)
             }
             exit(1); // Exit the child process
         default: // Parent process
-            if(background_flag)
+            if(background_flag) // If the child process was a background command
             {
-                printf("[Background PID: %d] %s is running\n", pid, args[0]);
+                printf("[Background PID: %d] %s is running\n", pid, args[0]); // Display to user the process id and command name that is running in background
             }
             else
             {
-                waitpid(pid, &status, WUNTRACED); // Wait for the child process to finish
+                waitpid(pid, &status, WUNTRACED); // Wait for the child process to finish if not a background command
             }
     }
 }   
     
 // LEFT TO ADD:
+// ADD ACCESS FUNCTION TO CHECKING FILE PERMISSIONS -> check that you dont have to validate files existance before trying to check its permissions
 // Add PARENT env variable to execute_external_command -> revise comments -> check if it needs to be updated elsewhere too
 // Add command_not_found function to execute_external_command/error handling for command not found -> better error ahndling
 // background execution

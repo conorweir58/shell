@@ -175,12 +175,12 @@ void execute_command(char **args)
         }
         else if (!strcmp(args[0], "environ"))
         {
-            io_redirection(args);
+            io_redirection(args); // Process I/O redirection for the environ
 
-            execute_environ();
+            execute_environ(); // Call the execute_environ function
 
-            freopen("/dev/tty", "w", stdout);
-            freopen("/dev/tty", "r", stdin);
+            freopen("/dev/tty", "w", stdout); // Reset stdout to the terminal
+            freopen("/dev/tty", "r", stdin); // Reset stdin to the terminal
         }
         else if (!strcmp(args[0], "cd"))
         {
@@ -265,6 +265,13 @@ void io_redirection(char **args)
         {
             stdin_flag = 1; // Set the input redirection flag
             args[i] = NULL; // Set the argument to NULL -> removes the redirection symbol
+
+            if(args[i+1] == NULL) // Check if there is a file path after the "<"
+            {
+                fprintf(stderr, "Error: No output file provided for redirection\n"); // Print error message -> no relevant perror message possible with it
+                exit(1); // Exit to prevent further command execution
+            }
+
             i++; // Move to the next argument which should be the stdin file path
             
             pfile_in = args[i]; // Set the file pointer for input redirection to the provided file path
@@ -274,6 +281,13 @@ void io_redirection(char **args)
         {
             stdout_flag = 1; // Set the output redirection flag
             args[i] = NULL; // Set the argument to NULL -> removes the redirection symbol
+
+            if(args[i+1] == NULL) // Check if there is a file path after the ">"
+            {
+                fprintf(stderr, "Error: No output file provided for redirection\n"); // Print error message -> no relevant perror message possible with it
+                exit(1); // Exit to prevent further command execution
+            }
+
             i++; // Move to the next argument which should be the stdout file path
 
             pfile_out = args[i]; // Set the file pointer for output redirection to the provided file path
@@ -283,6 +297,13 @@ void io_redirection(char **args)
         {
             append_flag = 1; // Set the output redirection flag
             args[i] = NULL; // Set the argument to NULL -> removes the redirection symbol
+
+            if(args[i+1] == NULL) // Check if there is a file path after the ">>"
+            {
+                fprintf(stderr, "Error: No output file provided for redirection\n"); // Print error message -> no relevant perror message possible with it
+                exit(1); // Exit to prevent further command execution
+            }
+
             i++; // Move to the next argument which should be the stdout file path
 
             pfile_out = args[i]; // Set the file pointer for output redirection to the provided file path
@@ -292,26 +313,59 @@ void io_redirection(char **args)
         i++;
     }
 
-    if(stdin_flag)
+    if(stdin_flag) // If "<" found in command, i.e stdin_flag set to 1
     {
-        if(freopen(pfile_in, "r", stdin) == NULL)
+        if(access(pfile_in, F_OK) == -1) // Check if the file exists
         {
-            perror("Could not open Input file");
+            perror("Error: Input file does not exist");
+            exit(1); // Exit to prevent further command execution
+        }
+
+        if(access(pfile_in, R_OK) == -1) // Check if the file has read permissions
+        {
+            perror("Error: You lack permissions to read from this file");
+            exit(1); // Exit to prevent further command execution
+        }
+
+        if(freopen(pfile_in, "r", stdin) == NULL) // Open the file for reading and set it as the standard input
+        {
+            perror("Error: Could not open Input file to read from");
+            exit(1); // Exit to prevent further command execution
         }
     }
 
-    if(stdout_flag)
+    if(stdout_flag) // If ">" found in command, i.e stdout_flag set to 1
     {
-        if(freopen(pfile_out, "w", stdout) == NULL)
+        if(access(pfile_out, F_OK) != -1) // Check if the file exists -> if it doesn't freopen will create it
         {
-            perror("Could not open Output file to write to");
+            if(access(pfile_out, W_OK) == -1) // If the file exists we check to see if user has permissions to write to it
+            {
+                perror("Error: You lack permissions to write to this file");
+                exit(1); // Exit to prevent further command execution
+            }
+        }
+
+        if(freopen(pfile_out, "w", stdout) == NULL) // Open the file for writing and set it as the standard output
+        {
+            perror("Error: Could not open Output file to write to");
+            exit(1); // Exit to prevent further command execution
         }
     }
-    else if(append_flag)
+    else if(append_flag) // If ">>" found in command, i.e append_flag set to 1
     {
-        if(freopen(pfile_out, "a", stdout) == NULL)
+        if(access(pfile_out, F_OK) != -1) // Check if the file exists -> if it doesn't freopen will create it
         {
-            perror("Could not open Output file to append to");
+            if(access(pfile_out, W_OK) == -1) // If the file exists we check to see if user has permissions to write to it
+            {
+                perror("Error: You lack permissions to write to this file");
+                exit(1); // Exit to prevent further command execution
+            }
+        }
+        
+        if(freopen(pfile_out, "a", stdout) == NULL) // Open the file for appending and set it as the standard output
+        {
+            perror("Error: Could not open Output file to append to");
+            exit(1); // Exit to prevent further command execution
         }
     }
 }
