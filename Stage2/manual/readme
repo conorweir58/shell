@@ -20,6 +20,10 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
 "Customshell" is a shell built in C with:
 - Built in Command Execution
 - Batch file Execution Compatability
+- External Command Execution
+- Background Command Execution
+- Shell I/O Redirection
+- Shell Environment Variables
 
 ##                         ##
 ## BUILT-IN SHELL COMMANDS ##
@@ -198,3 +202,6 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
         Customshell uses this enviornment variable to greet the User on startup of the shell.
 
     # PARENT ENVIORNMENT VARIABLE
+        The PARENT enviornment variable is not a standard enviornment variable in all shells,
+        however Customshell uses this enviornment variable to store the name of the parent directory that spawns a child process.
+        This is used during external command execution.
