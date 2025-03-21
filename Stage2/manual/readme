@@ -51,18 +51,150 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
 # COMMAND: quit
     Exit the shell.
 
+##                         ##
+## EXTERNAL SHELL COMMANDS ##
+##                         ##
+
+# COMMAND: [command] [arguments]
+    Executes external commands with given arguments.
+
+# HOW CUSTOMSHELL HANDLES EXTERNAL COMMANDS (IN THE FOREGROUND):
+    The shell will fork a child process to execute the external command.
+    The child process will then execute the command using the execvp() system call.
+    The parent process will wait for the child process to finish executing the command.
+
+##                              ##
+## BACKGROUND COMMAND EXECUTION ##
+##                              ##
+
+# COMMAND: [command] [arguments] &
+    Executes external commands with given arguments in the background.
+    The "&" symbol must be placed at the end of the command to execute it in the background.
+    Only works for external commands.
+
+# HOW CUSTOMSHELL HANDLES BACKGROUND EXECUTION:
+    If the "&" symbol is detected at the end of the command, the shell will execute the command in the background.
+    The shell will fork a child process to execute the external command.
+    The child process will then execute the command using the execvp() system call.
+    The parent process will not wait for the child process to finish executing the command
+    and therefore the shell will continue as the command is executed in the background.
+
 ##                                    ##
 ## BATCH FILE EXECUTION COMPATABILITY ##
 ##                                    ##
 
-# PASSING A BATCH FILE:
+# PASSING A BATCH FILE: ./customshell [batch file]
     In order to pass a Batch File to the shell, the user must pass the file path as an argument when running the shell.
-    The path to the shell executable must be argument 1 (argv[0]) and the path to the batch file must be argument 2 (argv[1]). E.g. "./customshell batch_file"
+    The path to the shell executable must be argument 1 (argv[0]) and the path to the batch file must be argument 2 (argv[1]).
     The shell will then execute the commands in the batch file in order, from the beginning to the end of the file.
 
 # THE BATCH FILE:
     The batch file must contain a list of commands, each on a new line.
-    The shell will execute each command in the order they appear in the file.
+    The shell will execute each command in the order they appear in the file and output the results to stdout (Standard Output).
 
 # EXITING THE SHELL FROM A BATCH FILE:
     The shell will automatically exit once the End of File (EOF) is reached in the batch file.
+
+# HOW CUSTOMSHELL HANDLES BATCH FILE EXECUTION
+    When a batch file is passed to the shell as an argument, Customshell attempts to open the file for reading.
+    If the file is successfully opened, the shell will read the file line by line and execute each command in the file.
+    At the end of the file, the shell will exit by executing the "quit" command, and closing the file.
+
+##                       ##
+## SHELL I/O REDIRECTION ##
+##                       ##
+
+# SYNOPSIS:
+    Whenever a command is run, it can take input and return output.
+    I/O redirection allows the user to change where the input comes from and where the output goes.
+    This helps us redirect these inputs and outputs to and from files we want.
+    This is done using special characters in the commands.
+
+# OVERVIEW:
+    The shell supports I/O redirection for both input and output.
+    The shell will redirect the input and output of commands to and from files.
+
+    # OPERATIONAL COMMANDS:
+        Works for all external commands.
+        I/O redirection only works for  the following internal commands:
+        - echo
+        - environ
+        - help
+        - dir
+
+# INPUT REDIRECTION: [command] < [file name]
+    The "<" symbol is used to redirect the input of a command from a file.
+    The "<" symbol must be placed before the file name.
+
+    # EXAMPLE:
+        echo < file.txt
+
+# OUTPUT REDIRECTION (OVERWRITE): [command] > [file name]
+    The ">" symbol is used to redirect the output of a command to a file.
+    The ">" symbol must be placed before the file name.
+    If the file already exists, it will be overwritten.
+    If the file does not exist, it will create the file and redirect the output to it.
+
+    # EXAMPLE:
+        echo "Hello World" > file.txt
+
+# OUTPUT REDIRECTION (APPEND): [command] >> [file name]
+    The ">>" symbol is used to redirect the output of a command to a file.
+    The ">>" symbol must be placed before the file name.
+    If the file already exists, it will append the output to the end of the file.
+    If the file does not exist, it will create the file and redirect the output to it.
+
+    # EXAMPLE:
+        echo "Hello World" >> file.txt
+
+# HOW CUSTOMSHELL HANDLES I/O REDIRECTION
+    When a valid command is passed to the shell, Customshell searches through the command for any I/O redirection symbols.
+    If an I/O redirection symbol is detected, it sets a corresponding flag to indicate the type of redirection.
+    Using these flags, the shell then opens the file for reading or writing, depending on the type of redirection.
+    The shell then redirects the input or output of the command to or from the file as required.
+    After the redirection is complete, the shell closes the file and resets the redirection flags.
+
+##                   ##
+## SHELL ENVIORNMENT ##
+##                   ##
+
+# ENVIORNMENT VARIABLES:
+    An environment variable is a variable whose value is set outside the program,
+    typically through functionality built into the operating system or microservice.
+
+    An environment variable is made up of a key-value pair,
+    and any number may be created and available for reference at a point in time.
+
+    Environment variables are used to pass information into processes that are spawned from the shell.
+
+    E.g.
+        PATH=/usr/local/bin:/usr/bin:/bin -> Environment variable that contains the directories in which the shell will look for executable files.
+        HOME=/home/user -> Environment variable that contains the path to the user's home directory.
+        SHELL=/bin/bash -> Environment variable that contains the path to the default shell executable.
+    
+    All enviornment variables can be viewed by executing the "environ" command.
+
+# HOW CUSTOMSHELL USES ENVIORNMENT VARIABLES
+
+    # SHELL ENVIORNMENT VARIABLE
+        The SHELL environment variable is used to store the path of the shell executable.
+        Upon startup, the shell environment variable is set to the path of the shell executable.
+        This is based on the current directory the User is in when the shell is executed.
+        The SHELL enviornment variable contains the Current Working Directory the User is in during the execution of the shell,
+        with the name of "customshell" appended to the end.
+
+    # PWD ENVIORNMENT VARIABLE
+        The PWD environment variable is used to store the path of the current working directory.
+        Upon startup, the PWD environment variable is set to the path of the current working directory.
+        As the user navigates through directories using commands, the PWD environment variable is updated to reflect the current working directory.
+
+    # OLDPWD ENVIORNMENT VARIABLE
+        The OLDPWD environment variable is used to store the path of the previous working directory.
+        As the user navigates through directories using commands, the OLDPWD environment variable is updated to reflect the previous working directory,
+        i.e. the directory the user was in before navigating to the current working directory or the PWD enviornment variable.
+
+    # USER ENVIRONMENT VARIABLE
+        The USER environment variable is used to store the name of the current user.
+        Customshell uses this enviornment variable to greet the User on startup of the shell.
+
+    # PARENT ENVIORNMENT VARIABLE
