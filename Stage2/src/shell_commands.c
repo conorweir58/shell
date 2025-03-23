@@ -29,6 +29,8 @@ void execute_ls(char *path)
         if(command == NULL) // Check if malloc was successful
         {
             perror("Could not allocate memory for the command"); // Print error message along with the error message from the system
+            free(command); // Free the malloc'd memory
+            command = NULL; // Set the command to NULL
             return; // return back to main input loop
         }
 
@@ -67,7 +69,7 @@ void execute_cd(char *path)
     // change the directory to the path, if change directory fails (equals -1), prints error message
     if (chdir(path) == -1)
     {
-        printf("cd: %s: No such file or directory\n", path);
+        fprintf(stderr, "cd: %s: No such file or directory\n", path); // Print error message to stderr
         return;
     }
 
@@ -210,8 +212,8 @@ void execute_external_command(char **args)
             if (execvp(args[0], args) == -1) // Execute the command
             {
                 fprintf(stderr, "Unable to execute command: %s\n", args[0]); // Error message for failed exec -> no relevant perror message so using fprintf
+                exit(1); // Exit the child process if exec fails
             }
-            exit(1); // Exit the child process
         default: // Parent process
             if(background_flag) // If the child process was a background command
             {

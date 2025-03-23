@@ -13,23 +13,11 @@ int main(int argc, char *argv[]) {
     char buf[MAX_BUFFER];  // Input buffer
     char *args[MAX_ARGS];  // Array of argument strings
     char **arg;            // Pointer for iterating through args
-    char file[MAX_PATH];   // Batch File path buffer
-    
+    // char file[MAX_PATH];   // Batch File path buffer
+
     set_shell_path(); // Set the SHELL environment variable to the path of the shell executable
 
-    // COULD THIS IF STATEMENT BE A FUNCTION??
-    // Check if a batch file was passed as an argument
-    if(!argv[1])
-    {
-        // if no batch file, display startup message
-        start_up_shell();
-    }
-    else
-    {
-        // if batch file - call batch file function and pass it the batch file
-        strcpy(file, argv[1]); // Copy the batch file path to the file buffer
-        execute_batch_file(file); // execute the batch file and exits the shell to prevent further input
-    }
+    check_batch(argv); // Check if a batch file was passed as an argument and launch shell correspondingly
 
     // Main input loop -> Loops until quit or EOF
     while (!feof(stdin)) { 

@@ -11,6 +11,7 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
 //  Helper functions
 // 
 
+// Function to display the welcome message box
 void start_up_shell()
 {
     // variables for storing the user name
@@ -52,6 +53,7 @@ void start_up_shell()
     printf("\n"); // New line to space out the prompt from the welcome message
 }
 
+// Function to set the SHELL environment variable to the path of the shell executable
 void set_shell_path()
 {
     char cwd[MAX_PATH];    // Current working directory 
@@ -88,6 +90,7 @@ char *get_prompt()
     return prompt; // Return the shell prompt to be printed in main.c
 }
 
+// Function to execute a batch file
 void execute_batch_file(char *file)
 {
     FILE *pfile = NULL; // Initialize file pointer
@@ -119,10 +122,29 @@ void execute_batch_file(char *file)
     else
     {
         perror("Could not open batch file!"); // Print error message along with the error message from the system
-        exit(1); // Exit the shell -> possibly change to return an error code
+        exit(1); // Exit the shell
     }
 }
 
+// Function to check if a batch file was passed as an argument and launch shell correspondingly
+void check_batch(char *argv[])
+{
+    char file[MAX_PATH];   // Batch File path buffer
+
+    if(!argv[1])
+    {
+        // if no batch file, display startup message
+        start_up_shell();
+    }
+    else
+    {
+        // if batch file - call batch file function and pass it the batch file
+        strcpy(file, argv[1]); // Copy the batch file path to the file buffer
+        execute_batch_file(file); // execute the batch file and exits the shell to prevent further input
+    }
+}
+
+// Function to check if given command is internal
 int check_internal(char **args)
 {
     // List of internal commands
@@ -149,6 +171,7 @@ int check_internal(char **args)
     return 0; // Return 0 if the command is an external command
 }
 
+// Function to check and execute a given command
 void execute_command(char **args)
 {
     if(check_internal(args))
@@ -260,6 +283,7 @@ void execute_command(char **args)
     }
 }
 
+// Function to check if the command should be run in the background
 int check_background(char **args)
 {
     if(check_internal(args)) // If the command is internal
@@ -282,6 +306,7 @@ int check_background(char **args)
     return 0; // Return 0 if the command should not be run in the background
 }
 
+// Function to handle input/output redirection
 void io_redirection(char **args)
 {
     // Initialize char and file pointers for input/output redirection

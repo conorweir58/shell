@@ -32,6 +32,7 @@ void start_up_shell(); // Function to display the welcome message box
 void set_shell_path(); // Function to set the SHELL environment variable to the path of the shell executable
 char *get_prompt(); // Function to get the shell prompt based on the current working directory
 void execute_batch_file(char *file); // Function to execute a batch file
+void check_batch(char *argv[]); // Function to check if a batch file was passed as an argument and launch shell correspondingly
 int check_internal(char **args); // Function to check if given command is internal
 void execute_command(char **args); // Function to check and execute a given command
 int check_background(char **args); // Function to check if the command should be run in the background
