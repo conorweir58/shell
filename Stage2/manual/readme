@@ -55,9 +55,9 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
 # COMMAND: quit
     Exit the shell.
 
-##                         ##
-## EXTERNAL SHELL COMMANDS ##
-##                         ##
+##                                         ##
+## EXTERNAL COMMAND EXECUTION (FOREGROUND) ##
+##                                         ##
 
 # COMMAND: [command] [arguments]
     Executes external commands with given arguments.
@@ -67,9 +67,9 @@ ACADEMIC INTEGRITY STATEMENT: I acknowledge DCU's academic integrity policy.
     The child process will then execute the command using the execvp() system call.
     The parent process will wait for the child process to finish executing the command.
 
-##                              ##
-## BACKGROUND COMMAND EXECUTION ##
-##                              ##
+##                                         ##
+## EXTERNAL COMMAND EXECUTION (BACKGROUND) ##
+##                                         ##
 
 # COMMAND: [command] [arguments] &
     Executes external commands with given arguments in the background.
