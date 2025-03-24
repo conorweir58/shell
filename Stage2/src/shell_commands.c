@@ -207,7 +207,7 @@ void execute_external_command(char **args)
                 }
             }
 
-            io_redirection(args); // Process I/O redirection for the command
+            io_redirection(args); // Process I/O redirection for the command -> don't revert file streams as execvp will close them or exit(1) will clean them up on error
 
             if (execvp(args[0], args) == -1) // Execute the command
             {
@@ -224,23 +224,4 @@ void execute_external_command(char **args)
                 waitpid(pid, &status, WUNTRACED); // Wait for the child process to finish if not a background command
             }
     }
-}   
-    
-// LEFT TO ADD:
-// ADD ACCESS FUNCTION TO CHECKING FILE PERMISSIONS -> check that you dont have to validate files existance before trying to check its permissions
-// Add PARENT env variable to execute_external_command -> revise comments -> check if it needs to be updated elsewhere too
-// Add command_not_found function to execute_external_command/error handling for command not found -> better error ahndling
-// background execution
-// Add doing and done for background exec
-// I/O redirection
-// Add error handling to IO
-// Make everything work for batch file
-// Make it so the check_background function returns a 1 or 0 to a dont wait variable inside the regular execute external command function
-// Check batch file support for background exec -> prints prompt sometimes
-// Use dup to revert back to original IO stream
-
-// You may want to use the access function to check on existence or not of the files:
-
-// #include <unistd.h>
-
-// int access(const char *pathname, int mode);
+}
