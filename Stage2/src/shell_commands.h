@@ -23,4 +23,3 @@ void execute_echo(char **args); // Function to execute the "echo" command -> pri
 void execute_pause(); // Function to execute the "pause" command -> prompts the user to press enter to continue
 void execute_help(); // Function to execute the "help" command -> displays the user manual
 void execute_external_command(char **args); // Function to execute external commands
-void execute_command_background(char **args); // Function to execute a command in the background
