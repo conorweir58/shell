@@ -1,17 +1,52 @@
-# CSC1021 Operating Systems: customshell
+# CUSTOMSHELL
 
-## Introduction
+This custom shell is a shell built in C with the following functionalities:
 
-This is the starter repository for the _CSC1021 Operating Systems_ project entitled `customshell` and which you must complete individually. https://loop.dcu.ie/mod/assign/view.php?id=2594886
+- Built in Command Execution
+- Batch file Execution Compatability
+- External Command Execution
+- Background Command Execution
+- Shell I/O Redirection
+- Shell Environment Variables
 
-## What you need to do
+This repo contains 2 stages:
 
-You should follow the instructions below:
+- Stage1: First entry of the shell, only has built in command execution and shell enviornment variables.
 
-1. fork (do not clone) this repository.  Once you have forked it, make your own repository private add both me (Graham Healy - @healygr) as "maintainer". You must do both of these steps before adding any deliverables. Maintainer: Manage -> Members -> Invite members -> search for and select @healygr -> set Select Maximum role to maintainer -> click Invite; Private: Settings -> General -> Visibility, project features, permissions -> Project visibility = private.
-2. There are 3 folders (Stage1, Stage2, and Stage3), and within each of these a `src`, `manual`, `bin` directory.
-3. Add your files relating to the manual/help command to the `manual` directory.
-4. Your `makefile` should build the binary and place it in the `bin` directory.
+- Stage2: Complete shell with full functionality.
 
-## Other notes
-There are supporting exercises to help you with the project.  You will find them all under  [Lab04/05 on the Loop CSC1021 Site](https://loop.dcu.ie/mod/book/view.php?id=2588690).  Use Git regularly and commit versions of your code often.
+## Execution
+
+Create the shell executable inside of one of the stages.
+
+```bash
+make
+```
+
+Then run the executable inside the 'bin' directory.
+
+```bash
+./bin/customshell
+```
+
+## Usage
+
+Use the manual inside of the shell to view full usage instructions.
+
+```bash
+help
+```
+
+## Contributing
+
+Pull requests are welcome outside of for direct reuse/reupload of my work. 
+
+For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This repository is my original academic work submitted for credit. It is solely for personal portfolio and backup storage purposes.
+
+Do not copy, reuse, or submit any part of this repository as your own academic work.
+
+However, outside of academics, contributions and suggestions are always welcome to my work.
