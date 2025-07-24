@@ -8,6 +8,7 @@ This custom shell is a shell built in C with the following functionalities:
 - Background Command Execution
 - Shell I/O Redirection
 - Shell Environment Variables
+- Custom Command Line Interface
 
 This repo contains 2 stages:
 
